@@ -159,3 +159,9 @@ ipython_config.py
 #   git rm -r .ipynb_checkpoints/
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Python,JupyterNotebooks
+.keys/
+
+# Hack Apertus submission clones (evaluated commits are pinned in submissions.tsv)
+submissions/
+# imported submission predictions, rebuilt by: python -m scripts.evaluate_submissions
+data/evaluation/submission_predictions/

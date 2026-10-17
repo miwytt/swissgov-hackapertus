@@ -1,3 +1,4 @@
+import ast
 import json
 from dataclasses import dataclass
 from typing import Optional
@@ -48,16 +49,14 @@ class LLMPrediction:
         except KeyError:
             json_str = "{}"
         try:
-            data = eval(json_str)
-        except (SyntaxError, NameError, TypeError):
+            data = ast.literal_eval(json_str)  # literal_eval: never execute model output
+        except Exception:
             try:
                 data = json.loads(json_str)
             except json.JSONDecodeError:
                 #print(f'json_str: {json_str}')
                 #print("json decoding error")
                 data = {}
-        except MemoryError:
-            data = {}
         return data
 
     def get_json_str(self) -> str:

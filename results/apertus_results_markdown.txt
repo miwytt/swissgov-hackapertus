@@ -1,0 +1,9 @@
+Spearman correlation (token-level, SwissGov-RSD, strict parsing as in the paper). Parsed = % of items with parseable JSON output (dev / test; GPT-4o: full set).
+
+| Model | JSON mode | Dev DE | Dev FR | Dev IT | Test DE | Test FR | Test IT | Parsed % (dev / test) |
+|---|---|---|---|---|---|---|---|---|
+| GPT-4o (paper) | on | 0.026 | 0.011 | 0.044 | 0.090 | 0.015 | 0.081 | 97.8 / 97.8 |
+| Apertus-v1.5-8B | off | -0.005 | -0.001 | -0.015 | 0.004 | 0.037 | 0.003 | 13.9 / 12.5 |
+| Apertus-v1.5-8B | on | -0.005 | -0.004 | 0.010 | 0.027 | 0.021 | 0.018 | 34.9 / 35.1 |
+| Apertus-v1.5-70B | off | 0.007 | 0.017 | 0.013 | -0.006 | -0.004 | 0.084 | 26.8 / 26.8 |
+| Apertus-v1.5-70B | on | 0.005 | 0.000 | 0.048 | 0.016 | -0.013 | 0.064 | 48.2 / 47.6 |

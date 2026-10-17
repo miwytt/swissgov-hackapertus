@@ -1,0 +1,59 @@
+Spearman correlation (token-level, SwissGov-RSD, official evaluator). Dev: – = no dev predictions. Commits: submissions.tsv.
+
+## Official submission per team (sorted by test avg)
+
+| Team | Dev DE | Dev FR | Dev IT | Dev avg | Test DE | Test FR | Test IT | Test avg |
+|---|---|---|---|---|---|---|---|---|
+| rsd-swissgov | 0.489 | 0.363 | 0.556 | 0.469 | 0.441 | 0.272 | 0.473 | 0.395 |
+| apertus-swissgov-rsd | – | – | – | – | 0.428 | 0.234 | 0.460 | 0.374 |
+| hack-apertus-tsemin | 0.404 | 0.227 | 0.389 | 0.340 | 0.412 | 0.189 | 0.367 | 0.323 |
+| SpanDiff-HackApertus | 0.393 | 0.239 | 0.397 | 0.343 | 0.379 | 0.189 | 0.377 | 0.315 |
+| polyjudge-swissgov-rsd | – | – | – | – | 0.396 | 0.108 | 0.324 | 0.276 |
+| Hack-Apertus-Swiss-open-source-AI | 0.288 | 0.173 | 0.305 | 0.255 | 0.275 | 0.144 | 0.313 | 0.244 |
+| RoestiBridge | 0.210 | 0.165 | 0.204 | 0.193 | 0.225 | 0.128 | 0.194 | 0.182 |
+| clauseshift | 0.147 | 0.088 | 0.153 | 0.129 | 0.132 | 0.078 | 0.165 | 0.125 |
+
+## Highest-scoring committed run per team (selected by test avg, so optimistic)
+
+| Team | Run | System | Dev DE | Dev FR | Dev IT | Dev avg | Test DE | Test FR | Test IT | Test avg |
+|---|---|---|---|---|---|---|---|---|---|---|
+| rsd-swissgov | predictions.jsonl (official) | Frozen Apertus-v1.5-8B reads each document with the other placed before it; word-level hidden states of layers 14-17 are averaged and scored by a small trained GRU probe (about 4.5M parameters). Trained on dev labels, so the dev score is in-sample; by default the code picks the training epoch on the test split, and the setting used for the submitted model is not recorded. | 0.489 | 0.363 | 0.556 | 0.469 | 0.441 | 0.272 | 0.473 | 0.395 |
+| apertus-swissgov-rsd | apertus_head (official) | Frozen Apertus-v1.5-8B as a reader: per word, DiffAlign dissimilarity at layers 12, 14, 16 and 18 plus contrastive surprisal (how much seeing the other document makes the word more predictable), combined by a logistic-regression head trained on dev labels. | – | – | – | – | 0.428 | 0.234 | 0.460 | 0.374 |
+| hack-apertus-tsemin | tsemin (fuse verified+d4) (official) | Apertus-v1.5-8B via API, no training: words are ranked by how surprising the model still finds them after reading the other version; blocks the model judges to have no counterpart go to the top when surprisal agrees. Four fusion settings were tuned on 60 dev pairs. | 0.404 | 0.227 | 0.389 | 0.340 | 0.412 | 0.189 | 0.367 | 0.323 |
+| SpanDiff-HackApertus | SpanDiff (dev out-of-fold) (official) | DiffAlign on Apertus-v1.5-8B hidden state 15 with refinements (mean-centring, hubness correction, sentence-constrained alignment), combined with surprisal, number-mismatch and simple word features by a ridge regression trained on dev labels (dev scores out-of-fold). | 0.393 | 0.239 | 0.397 | 0.343 | 0.379 | 0.189 | 0.377 | 0.315 |
+| polyjudge-swissgov-rsd | M1 (main) (official) | Rule-based sentence alignment marks words in sentences without a counterpart; Apertus-v1.5-70B verifies a few extra rule-based flags (numbers, untranslated text). The model changes only 74 of 150k test tokens, so the score matches the model-free baseline (0.273). | – | – | – | – | 0.396 | 0.108 | 0.324 | 0.276 |
+| Hack-Apertus-Swiss-open-source-AI | diffalign (official) | Unsupervised DiffAlign on Apertus-v1.5-8B: a word scores 1 minus its best cosine match in the other document, using layer-20 hidden states centred on the document mean. Layer and centring were chosen on dev labels. | 0.288 | 0.173 | 0.305 | 0.255 | 0.275 | 0.144 | 0.313 | 0.244 |
+| RoestiBridge | submission (70B, n=3) (official) | Apertus-v1.5-70B is prompted to list meaning differences as excerpts with a 1-5 severity; excerpts are mapped to words, averaged over 3 samples and combined with a rule-based number-mismatch score. No training; scoring rules were set on a 40-document dev subset. | 0.210 | 0.165 | 0.204 | 0.193 | 0.225 | 0.128 | 0.194 | 0.182 |
+| clauseshift | CLAUSESHIFT (official) | DiffAlign with the mmBERT-base encoder (not Apertus) scores all words; Apertus-v1.5-8B re-rates at most 12 words per side in 18 documents per language, blended in with weight 0.35. No training. | 0.147 | 0.088 | 0.153 | 0.129 | 0.132 | 0.078 | 0.165 | 0.125 |
+
+## All scored runs
+
+| Team | Run | Dev DE | Dev FR | Dev IT | Dev avg | Test DE | Test FR | Test IT | Test avg |
+|---|---|---|---|---|---|---|---|---|---|
+| apertus-swissgov-rsd | apertus_head | – | – | – | – | 0.428 | 0.234 | 0.460 | 0.374 |
+| clauseshift | CLAUSESHIFT | 0.147 | 0.088 | 0.153 | 0.129 | 0.132 | 0.078 | 0.165 | 0.125 |
+| Hack-Apertus-Swiss-open-source-AI | diffalign | 0.288 | 0.173 | 0.305 | 0.255 | 0.275 | 0.144 | 0.313 | 0.244 |
+| hack-apertus-tsemin | tsemin (fuse verified+d4) | 0.404 | 0.227 | 0.389 | 0.340 | 0.412 | 0.189 | 0.367 | 0.323 |
+| hack-apertus-tsemin | b0s baseline | – | – | – | – | -0.019 | 0.004 | -0.030 | -0.015 |
+| polyjudge-swissgov-rsd | M1 (main) | – | – | – | – | 0.396 | 0.108 | 0.324 | 0.276 |
+| polyjudge-swissgov-rsd | B0 baseline | – | – | – | – | 0.390 | 0.108 | 0.320 | 0.273 |
+| polyjudge-swissgov-rsd | M0 | – | – | – | – | 0.296 | 0.122 | 0.221 | 0.213 |
+| polyjudge-swissgov-rsd | M2 | – | – | – | – | 0.354 | 0.131 | 0.284 | 0.256 |
+| polyjudge-swissgov-rsd | M3 | – | – | – | – | 0.373 | 0.079 | 0.316 | 0.256 |
+| RoestiBridge | submission (70B, n=3) | 0.210 | 0.165 | 0.204 | 0.193 | 0.225 | 0.128 | 0.194 | 0.182 |
+| RoestiBridge | 70B, n=1 | – | – | – | – | 0.140 | 0.138 | 0.211 | 0.163 |
+| RoestiBridge | 70B, n=3 (run folders) | 0.210 | 0.165 | 0.204 | 0.193 | 0.225 | 0.128 | 0.194 | 0.182 |
+| rsd-swissgov | predictions.jsonl | 0.489 | 0.363 | 0.556 | 0.469 | 0.441 | 0.272 | 0.473 | 0.395 |
+| rsd-swissgov | diffalign L15 | 0.332 | 0.217 | 0.362 | 0.304 | 0.322 | 0.182 | 0.360 | 0.288 |
+| rsd-swissgov | diffalign L14-17 | 0.329 | 0.216 | 0.364 | 0.303 | 0.315 | 0.184 | 0.366 | 0.288 |
+| rsd-swissgov | probe L14-17 GRU | 0.489 | 0.363 | 0.556 | 0.469 | 0.441 | 0.272 | 0.473 | 0.395 |
+| SpanDiff-HackApertus | SpanDiff (dev out-of-fold) | 0.393 | 0.239 | 0.397 | 0.343 | 0.379 | 0.189 | 0.377 | 0.315 |
+| SpanDiff-HackApertus | SpanDiff full-set file | 0.394 | 0.240 | 0.399 | 0.344 | 0.379 | 0.189 | 0.377 | 0.315 |
+| SpanDiff-HackApertus | ablation L8 | 0.245 | 0.165 | 0.282 | 0.231 | – | – | – | – |
+| SpanDiff-HackApertus | ablation L15 | 0.296 | 0.191 | 0.324 | 0.270 | – | – | – | – |
+| SpanDiff-HackApertus | baseline final layer | 0.053 | 0.056 | 0.106 | 0.072 | – | – | – | – |
+
+## Not scored
+- hackapertus_submission_track_2_uzh_tk_gm_clean: no prediction files committed
+- swissgov-rsd-apertus: no prediction files committed (skeleton + methodology only)
+- yt-uzh: only 10 span-level rows (results/result_on_test.jsonl), not a full prediction set

@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{lp{0.72\textwidth}}
+\toprule
+Team & System \\
+\midrule
+rsd-swissgov & Frozen Apertus-v1.5-8B reads each document with the other placed before it; word-level hidden states of layers 14-17 are averaged and scored by a small trained GRU probe (about 4.5M parameters). Trained on dev labels, so the dev score is in-sample; by default the code picks the training epoch on the test split, and the setting used for the submitted model is not recorded. \\
+apertus-swissgov-rsd & Frozen Apertus-v1.5-8B as a reader: per word, DiffAlign dissimilarity at layers 12, 14, 16 and 18 plus contrastive surprisal (how much seeing the other document makes the word more predictable), combined by a logistic-regression head trained on dev labels. \\
+hack-apertus-tsemin & Apertus-v1.5-8B via API, no training: words are ranked by how surprising the model still finds them after reading the other version; blocks the model judges to have no counterpart go to the top when surprisal agrees. Four fusion settings were tuned on 60 dev pairs. \\
+SpanDiff-HackApertus & DiffAlign on Apertus-v1.5-8B hidden state 15 with refinements (mean-centring, hubness correction, sentence-constrained alignment), combined with surprisal, number-mismatch and simple word features by a ridge regression trained on dev labels (dev scores out-of-fold). \\
+polyjudge-swissgov-rsd & Rule-based sentence alignment marks words in sentences without a counterpart; Apertus-v1.5-70B verifies a few extra rule-based flags (numbers, untranslated text). The model changes only 74 of 150k test tokens, so the score matches the model-free baseline (0.273). \\
+Hack-Apertus-Swiss-open-source-AI & Unsupervised DiffAlign on Apertus-v1.5-8B: a word scores 1 minus its best cosine match in the other document, using layer-20 hidden states centred on the document mean. Layer and centring were chosen on dev labels. \\
+RoestiBridge & Apertus-v1.5-70B is prompted to list meaning differences as excerpts with a 1-5 severity; excerpts are mapped to words, averaged over 3 samples and combined with a rule-based number-mismatch score. No training; scoring rules were set on a 40-document dev subset. \\
+clauseshift & DiffAlign with the mmBERT-base encoder (not Apertus) scores all words; Apertus-v1.5-8B re-rates at most 12 words per side in 18 documents per language, blended in with weight 0.35. No training. \\
+\bottomrule
+\end{tabular}
+\caption{System descriptions of the best-scoring run per team (Table~\ref{tab:submissions-best}), checked against each team's report and submitted code. Dev-tuned settings make the corresponding dev scores optimistic; test scores are unaffected.}
+\label{tab:submissions-systems}
+\end{table*}

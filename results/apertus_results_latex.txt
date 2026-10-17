@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{llcccccc}
+\toprule
+ & & \multicolumn{3}{c}{Dev} & \multicolumn{3}{c}{Test} \\
+\cmidrule(lr){3-5} \cmidrule(lr){6-8}
+Model & JSON mode & DE & FR & IT & DE & FR & IT \\
+\midrule
+GPT-4o (paper) & on & 0.026 & 0.011 & 0.044 & 0.090 & 0.015 & 0.081 \\
+\midrule
+Apertus-v1.5-8B & off & -0.005 & -0.001 & -0.015 & 0.004 & 0.037 & 0.003 \\
+Apertus-v1.5-8B & on & -0.005 & -0.004 & 0.010 & 0.027 & 0.021 & 0.018 \\
+Apertus-v1.5-70B & off & 0.007 & 0.017 & 0.013 & -0.006 & -0.004 & 0.084 \\
+Apertus-v1.5-70B & on & 0.005 & 0.000 & 0.048 & 0.016 & -0.013 & 0.064 \\
+\bottomrule
+\end{tabular}
+\caption{Spearman correlation between predicted and gold token-level difference labels on SwissGov-RSD for prompt-based Apertus models (via the CSCS inference API), with and without constrained JSON decoding. Unparseable outputs are scored as no difference, as in the original evaluation.}
+\label{tab:apertus-results}
+\end{table*}
